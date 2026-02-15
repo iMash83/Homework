@@ -1,19 +1,25 @@
-import random
-
-def get_numbers_ticket(min, max, quantity):
-    # Перевірка відповідності параметрів вимогам
-    if not (1 <= min <= quantity <= max <= 1000):
-        return []
-
-    # Створення набору випадкових чисел у заданому діапазоні
+def get_cats_info(path):
+    cats_list = []
     try:
-        numbers = random.sample(range(min, max + 1), quantity)
-    except ValueError:
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                try:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    cat_id, name, age = line.split(',')
+                    cats_list.append({
+                        "id": cat_id,
+                        "name": name,
+                        "age": age
+                    })
+                except ValueError:
+                    continue
+        return cats_list
+    except FileNotFoundError:
         return []
 
-    # Повернення відсортованого списку
-    return sorted(numbers)
+info = get_cats_info("/Users/Mash2/Documents/CODE/Homework_Mash/cats_file.txt")
 
-# Приклад 
-lottery_numbers = get_numbers_ticket(1, 49, 6)
-print("Ваші лотерейні числа:", lottery_numbers)
+for cat in info:
+    print(cat)

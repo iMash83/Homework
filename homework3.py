@@ -1,33 +1,44 @@
-import re
+import sys
+from pathlib import Path
+from colorama import init, Fore
 
-def normalize_phone(phone_number):
-  
-    sanitized = re.sub(r'[^\d+]', '', phone_number.strip())
-    
-    if sanitized.startswith('+'):
- 
-        normalized = sanitized
-    elif sanitized.startswith('380'):
+# Инициализация colorama
+init(autoreset=True)
 
-        normalized = '+' + sanitized
-    else:
-    
-        normalized = '+38' + sanitized
+def visualize_directory(path, indent=""):
+    try:
+        for item in sorted(path.iterdir()):
+            if item.is_dir():
+                print(f"{indent}{Fore.BLUE}{item.name}/")
+                visualize_directory(item, indent + "    ")
+            else:
+                print(f"{indent}{Fore.GREEN}{item.name}")
+    except PermissionError:
+        print(f"{indent}{Fore.RED}[Доступ заборонено]")
+    except FileNotFoundError:
+        print(f"{indent}{Fore.RED}[Файл не знайдено]")
+
+def main():
+
+    if len(sys.argv) < 2:
         
-    return normalized
+        raw_path = "/Users/Mash2/Documents/CODE/Homework_Mash/"
+        print(f"{Fore.YELLOW}Аргумент не передан. Использую путь по умолчанию: {raw_path}")
+    else:
+        
+        raw_path = sys.argv[1]
 
+    
+    directory_path = Path(raw_path)
 
-raw_numbers = [
-    "067\t123 4567",
-    "(095) 234-5678\n",
-    "+380 44 123 4567",
-    "380501234567",
-    "    +38(050)123-32-34",
-    "     0503451234",
-    "(050)8889900",
-    "38050-111-22-22",
-    "38050 111 22 11   ",
-]
+   
+    if not directory_path.exists():
+        print(f"{Fore.RED}Помилка: Шлях '{directory_path}' не існує.")
+    elif not directory_path.is_dir():
+        print(f"{Fore.RED}Помилка: '{directory_path}' не є директорією.")
+    else:
+        print(f"{Fore.YELLOW}Структура папки {directory_path}:")
+        visualize_directory(directory_path)
 
-sanitized_numbers = [normalize_phone(num) for num in raw_numbers]
-print("Нормалізовані номери телефонів для SMS-розсилки:", sanitized_numbers)
+if __name__ == "__main__":
+    main()
