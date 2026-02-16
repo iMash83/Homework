@@ -1,23 +1,36 @@
+from pathlib import Path
+
 def total_salary(path):
     total_sum = 0
     count = 0
     
-    with open(path) as file:
-        for line in file:
-            
-            print(f"Прочитана строка: {line.strip()}")
+    try:
+        with open(path, 'r') as file:
+            for line in file:
+                cleaned_line = line.strip()
+                if not cleaned_line:
+                    continue  
+                
+                try:
+                    name, salary = cleaned_line.split(',')
+                    total_sum += float(salary)
+                    count += 1
+                except ValueError:
+                    print(f"Ошибка парсинга строки: {cleaned_line}")
+                    continue
 
-            
-            name, salary = line.split(',')
-            total_sum += float(salary)
-            count += 1
-
-    if count == 0:
+    except FileNotFoundError:
+        print(f"Файл по пути '{path}' не найден.")
+        return 0, 0
+    except Exception as e:
+        print(f"Произошла ошибка: {e}")
         return 0, 0
 
     average_salary = total_sum / count
     return total_sum, average_salary
 
-
-total, average = total_salary("/Users/Mash2/Documents/CODE/Homework_Mash/salary_file.txt")
-print(f"Загальна сума заробітної плати: {total}, Середня заробітна плата: {average}")
+if __name__ == "__main__":
+    path_to_file = "salary_file.txt" 
+    
+    total, average = total_salary(path_to_file)
+    print(f"Загальна сума заробітної плати: {total}, Середня заробітна плата: {average}")

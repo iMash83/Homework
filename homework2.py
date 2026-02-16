@@ -1,25 +1,41 @@
+from pathlib import Path
+import pprint  
+
 def get_cats_info(path):
     cats_list = []
+    
     try:
         with open(path, 'r', encoding='utf-8') as file:
             for line in file:
+                cleaned_line = line.strip()
+                if not cleaned_line:
+                    continue
+                
                 try:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    cat_id, name, age = line.split(',')
-                    cats_list.append({
-                        "id": cat_id,
-                        "name": name,
-                        "age": age
-                    })
+                    cat_id, name, age = cleaned_line.split(',')
+                    
+                    cat_data = {
+                        "id": cat_id.strip(),
+                        "name": name.strip(),
+                        "age": age.strip()
+                    }
+                    
+                    cats_list.append(cat_data)
+                    
                 except ValueError:
                     continue
-        return cats_list
+
     except FileNotFoundError:
+        print(f"Файл не найден: {path}")
+        return []
+    except Exception as e:
+        print(f"Ошибка: {e}")
         return []
 
-info = get_cats_info("/Users/Mash2/Documents/CODE/Homework_Mash/cats_file.txt")
+    return cats_list
 
-for cat in info:
-    print(cat)
+if __name__ == "__main__":
+    cats_info = get_cats_info("cats_file.txt")
+    
+    print("Результат работы функции:")
+    pprint.pprint(cats_info)
