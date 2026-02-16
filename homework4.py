@@ -32,7 +32,6 @@ def show_phone(args, contacts):
 def show_all(contacts):
     if not contacts:
         return "No contacts saved."
-    # Собираем все контакты в красивый список
     result = []
     for name, phone in contacts.items():
         result.append(f"{name}: {phone}")
@@ -95,6 +94,5 @@ def main():
             print("\nGood bye!")
             break
 
-# ЭТИ ДВЕ СТРОКИ ОБЯЗАТЕЛЬНО ДОЛЖНЫ БЫТЬ В КОНЦЕ:
 if __name__ == "__main__":
     main()
